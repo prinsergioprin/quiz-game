@@ -1,0 +1,87 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  font-family: "Poppins", serif;
+  box-sizing: border-box;
+}
+
+:root {
+  --cl-neutral: #864cbf;
+  --cl-correct: #66bf39;
+  --cl-wrong: #ff3355;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
+  background-color: var(--cl-neutral);
+}
+
+body.correct {
+  background-color: var(--cl-correct);
+}
+
+body.wrong {
+  background-color: var(--cl-wrong);
+}
+
+.container {
+  width: 750px;
+  max-width: 80%;
+  border: 1px solid black;
+  padding: 20px;
+  background-color: white;
+  border-radius: 5px;
+  box-shadow: 0 0 5px 1px;
+}
+
+.btn-grid {
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+  gap: 10px;
+  margin: 15px;
+}
+
+.btn {
+  background-color: var(--cl-neutral);
+  border: none;
+  color: white;
+  border-radius: 5px;
+  padding: 5px;
+}
+
+.btn:hover {
+  opacity: 0.8;
+  cursor: pointer;
+  outline: 1px solid black;
+}
+
+.btn.correct {
+  background-color: var(--cl-correct);
+}
+
+.btn.wrong {
+  background-color: var(--cl-wrong);
+}
+
+.controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.start-btn,
+.next-btn {
+  padding: 5px 20px;
+  font-size: 1.2rem;
+}
+
+.hide {
+  display: none;
+}
