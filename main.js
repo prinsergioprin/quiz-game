@@ -1,7 +1,8 @@
+// list of variables
+const startText = document.getElementById("start-text");
 const startButton = document.getElementById("start-btn");
 const checkButton = document.getElementById("check-btn");
 const nextButton = document.getElementById("next-btn");
-const startText = document.getElementById("start-text");
 const questionContainer = document.getElementById("question-container");
 const questionElement = document.getElementById("question");
 const answersElement = document.getElementById("answer-buttons");
@@ -13,6 +14,7 @@ let score = 0;
 let questions;
 let currentQuestionIndex;
 
+// fetch questions from the trivia API
 async function fetchQuestions() {
   try {
     const response = await fetch(url);
@@ -24,6 +26,7 @@ async function fetchQuestions() {
   }
 }
 
+// general game logic
 startButton.addEventListener("click", () => {
   if (startButton.innerText === "Restart quiz") {
     resetGame();
@@ -37,6 +40,7 @@ nextButton.addEventListener("click", () => {
 });
 
 async function startGame() {
+  await fetchQuestions();
   startButton.classList.add("hide");
   startText.classList.add("hide");
   questionContainer.classList.remove("hide");
@@ -47,7 +51,6 @@ async function startGame() {
   scoreDisplay.classList.add("hide");
   currentQuestionIndex = 0;
   score = 0;
-  await fetchQuestions();
   setNextQuestion();
   createProgressBar();
 }
@@ -113,6 +116,16 @@ function checkAnswer() {
   }
 }
 
+function showFinalScore() {
+  questionContainer.classList.add("hide");
+  scoreDisplay.classList.remove("hide");
+  scoreDisplay.innerHTML = `You got ${score} out of ${questions.length} questions correct!`;
+  scoreDisplay.style.fontSize = "1.2rem";
+  startButton.innerText = "Restart quiz";
+  startButton.classList.remove("hide");
+}
+
+// progress bar logic
 function createProgressBar() {
   progressContainer.innerHTML = "";
   for (let i = 0; i < questions.length; i++) {
@@ -130,29 +143,7 @@ function updateProgressBar(correct) {
   );
 }
 
-function showFinalScore() {
-  questionContainer.classList.add("hide");
-  scoreDisplay.classList.remove("hide");
-  scoreDisplay.innerHTML = `You got ${score} out of ${questions.length} questions correct!`;
-  scoreDisplay.style.fontSize = "1.2rem";
-  startButton.innerText = "Restart quiz";
-  startButton.classList.remove("hide");
-}
-
-function setStatusClass(element, correct) {
-  clearStatusClass(element);
-  if (correct) {
-    element.classList.add("correct");
-  } else {
-    element.classList.add("wrong");
-  }
-}
-
-function clearStatusClass(element) {
-  element.classList.remove("correct");
-  element.classList.remove("wrong");
-}
-
+// helper functions
 function resetState() {
   nextButton.classList.add("hide");
   checkButton.classList.remove("hide");
@@ -171,6 +162,20 @@ function resetGame() {
   startButton.classList.add("hide");
   checkButton.classList.remove("hide");
   nextButton.classList.add("hide");
+}
+
+function setStatusClass(element, correct) {
+  clearStatusClass(element);
+  if (correct) {
+    element.classList.add("correct");
+  } else {
+    element.classList.add("wrong");
+  }
+}
+
+function clearStatusClass(element) {
+  element.classList.remove("correct");
+  element.classList.remove("wrong");
 }
 
 function unescapeHTML(str) {

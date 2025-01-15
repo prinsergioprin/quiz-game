@@ -4,22 +4,21 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="style.css" />
-    <title>Quiz Game</title>
+    <title>Sergio's Quiz</title>
   </head>
   <body>
     <div class="container">
-      <div id="game-container" class="hide">
-        <div id="question">Question</div>
-        <div id="answer-buttons" class="btn-grid">
-          <button class="btn">Answer 1</button>
-          <button class="btn">Answer 2</button>
-          <button class="btn">Answer 3</button>
-          <button class="btn">Answer 4</button>
-        </div>
+      <p id="start-text">Are you ready?</p>
+      <div id="progress-container" class="hide"></div>
+      <div id="score-display" class="hide"></div>
+      <div id="question-container" class="hide">
+        <h2 id="question"></h2>
+        <div id="answer-buttons" class="btn-grid"></div>
       </div>
-      <div id="controls">
-        <button id="start-btn" class="start-btn btn">Start</button>
-        <button id="next-btn" class="next-btn btn hide">Next</button>
+      <div class="controls">
+        <button id="start-btn" class="btn">Start quiz</button>
+        <button id="check-btn" class="btn hide">Check answer</button>
+        <button id="next-btn" class="btn hide">Next question</button>
       </div>
     </div>
     <script src="main.js"></script>

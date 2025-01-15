@@ -1,9 +1,10 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
 
+/* initial styling and variables */
 * {
   margin: 0;
   padding: 0;
-  font-family: "Poppins", serif;
+  font-family: "Poppins", sans-serif;
   box-sizing: border-box;
 }
 
@@ -22,66 +23,127 @@ body {
   background-color: var(--cl-neutral);
 }
 
-body.correct {
-  background-color: var(--cl-correct);
-}
-
-body.wrong {
-  background-color: var(--cl-wrong);
-}
-
 .container {
   width: 750px;
   max-width: 80%;
   border: 1px solid black;
   padding: 20px;
   background-color: white;
-  border-radius: 5px;
+  border-radius: 10px;
   box-shadow: 0 0 5px 1px;
 }
 
+.hide {
+  display: none;
+}
+
+#start-text,
+#question {
+  text-align: center;
+  font-weight: 400;
+  font-size: 1.4rem;
+  padding-bottom: 10px;
+}
+
+/* button styling and effects */
 .btn-grid {
   display: grid;
-  grid-template-columns: repeat(2, auto);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
-  margin: 15px;
+  margin: 10px;
 }
 
 .btn {
   background-color: var(--cl-neutral);
   border: none;
   color: white;
-  border-radius: 5px;
+  border-radius: 10px;
   padding: 5px;
+  box-shadow: 0 3px 0 0 #dedede;
+  font-size: 1.1rem;
 }
 
 .btn:hover {
   opacity: 0.8;
   cursor: pointer;
-  outline: 1px solid black;
 }
 
-.btn.correct {
-  background-color: var(--cl-correct);
+.btn:active {
+  transform: scale(0.95);
 }
 
-.btn.wrong {
-  background-color: var(--cl-wrong);
+.btn.selected {
+  outline: 2px solid black;
+}
+
+.btn.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .controls {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 10px;
 }
 
-.start-btn,
-.next-btn {
+#start-btn,
+#check-btn,
+#next-btn {
   padding: 5px 20px;
-  font-size: 1.2rem;
+  margin-top: 12px;
 }
 
-.hide {
-  display: none;
+.btn.correct,
+.progress-correct {
+  background-color: var(--cl-correct);
+}
+
+.btn.wrong,
+.progress-wrong {
+  background-color: var(--cl-wrong);
+}
+
+/* progress bar styling */
+#progress-container:not(.hide) {
+  display: flex;
+  width: 100%;
+  height: 20px;
+  margin-bottom: 20px;
+}
+
+.progress-segment {
+  height: 100%;
+  flex-grow: 1;
+  transition: background-color 0.5s ease-in-out;
+  border-radius: 10px;
+}
+
+.progress-unanswered {
+  background-color: #e0e0e0;
+}
+
+/* responsiveness */
+@media (max-width: 768px) {
+  .container {
+    max-width: 90%;
+    padding: 15px 10px;
+  }
+
+  #question {
+    font-size: 1.1rem;
+  }
+
+  .btn {
+    font-size: 0.8rem;
+  }
+
+  .btn-grid {
+    margin: 5px;
+    gap: 5px;
+  }
+
+  .btn.selected {
+    outline: 1.5px solid black;
+  }
 }
