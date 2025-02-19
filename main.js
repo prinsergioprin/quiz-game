@@ -1,4 +1,5 @@
 // list of variables
+// DOM elements
 const startText = document.getElementById("start-text");
 const startButton = document.getElementById("start-btn");
 const checkButton = document.getElementById("check-btn");
@@ -8,7 +9,11 @@ const questionElement = document.getElementById("question");
 const answersElement = document.getElementById("answer-buttons");
 const progressContainer = document.getElementById("progress-container");
 const scoreDisplay = document.getElementById("score-display");
-const url = "https://opentdb.com/api.php?amount=10&type=multiple";
+
+// API URL could be in the fetchQuestions function to avoid global variable. If it is a constant, it should be in all capital letters as best practice.
+const URL = "https://opentdb.com/api.php?amount=10&type=multiple";
+
+// global variables
 let selectedButton = null;
 let score = 0;
 let questions;
@@ -17,12 +22,19 @@ let currentQuestionIndex;
 // fetch questions from the trivia API
 async function fetchQuestions() {
   try {
-    const response = await fetch(url);
+    const response = await fetch(URL);
+    // response error handling
+    if (!response.ok) {
+      throw new Error(`Error fetching questions: ${response.status}`);
+    }
     const data = await response.json();
     questions = data.results;
   } catch (error) {
-    questionContainer.innerHTML =
+    // textContent is better than innerHTML for security reasons
+    questionContainer.textContent =
       "Error: We were not able to load your questions. Please refresh the page.";
+    // console.error for debugging purposes
+    console.error("Failed to fetch questions:", error);
   }
 }
 
@@ -35,45 +47,56 @@ startButton.addEventListener("click", () => {
 });
 checkButton.addEventListener("click", checkAnswer);
 nextButton.addEventListener("click", () => {
-  currentQuestionIndex++;
-  setNextQuestion();
+  // this can be consolidated into one line
+  // this increments currentQuestionIndex and then sets the next question
+  setNextQuestion(++currentQuestionIndex);
 });
 
 async function startGame() {
   await fetchQuestions();
-  startButton.classList.add("hide");
-  startText.classList.add("hide");
-  questionContainer.classList.remove("hide");
-  checkButton.classList.remove("hide");
+
+  // simplify with a forEach loop
+  [startButton, startText, scoreDisplay].forEach((el) =>
+    el.classList.add("hide")
+  );
+
+  // simplify with a forEach loop
+  [questionContainer, checkButton, progressContainer].forEach((el) =>
+    el.classList.remove("hide")
+  );
+
   checkButton.classList.add("disabled");
   checkButton.disabled = true;
-  progressContainer.classList.remove("hide");
-  scoreDisplay.classList.add("hide");
+
   currentQuestionIndex = 0;
   score = 0;
+
   setNextQuestion();
   createProgressBar();
 }
 
 function setNextQuestion() {
   resetState();
-  if (currentQuestionIndex < questions.length) {
-    showQuestion(questions[currentQuestionIndex]);
-  } else {
-    showFinalScore();
-  }
+  // simplify with a ternary operator
+  currentQuestionIndex < questions.length
+    ? showQuestion(questions[currentQuestionIndex])
+    : showFinalScore();
+}
+
+// create a function to shuffle the answers
+function shuffleArray(array) {
+  return array.sort(() => Math.random() - 0.5);
 }
 
 function showQuestion(question) {
-  let correctAnswer = question.correct_answer;
-  let incorrectAnswer = question.incorrect_answers;
-  let answerList = incorrectAnswer;
-  answerList.splice(
-    Math.floor(Math.random() * (incorrectAnswer.length + 1)),
-    0,
-    correctAnswer
-  );
-  questionElement.innerHTML = question.question;
+  // declare variables with const
+  const correctAnswer = question.correct_answer;
+  // break up the logic into a separate function
+  const answerList = [...question.incorrect_answers, correctAnswer];
+  shuffleArray(answerList);
+
+  // textContent is better than innerHTML for security reasons and add unescapeHTML function to decode HTML entities
+  questionElement.textContent = unescapeHTML(question.question);
   answerList.forEach((answer) => {
     const button = document.createElement("button");
     button.innerText = unescapeHTML(answer);
@@ -105,21 +128,22 @@ function checkAnswer() {
     button.style.cursor = "auto";
   });
   updateProgressBar(correct);
-  if (correct) {
-    score++;
-  }
+
+  // can be consolidated into one line
+  if (correct) score++;
   checkButton.classList.add("hide");
-  if (currentQuestionIndex < questions.length - 1) {
-    nextButton.classList.remove("hide");
-  } else {
-    showFinalScore();
-  }
+
+  // this can be simplified with a ternary operator
+  currentQuestionIndex < questions.length - 1
+    ? nextButton.classList.remove("hide")
+    : showFinalScore();
 }
 
 function showFinalScore() {
   questionContainer.classList.add("hide");
   scoreDisplay.classList.remove("hide");
-  scoreDisplay.innerHTML = `You got ${score} out of ${questions.length} questions correct!`;
+  // textContent is better than innerHTML for security reasons
+  scoreDisplay.textContent = `You got ${score} out of ${questions.length} questions correct!`;
   scoreDisplay.style.fontSize = "1.2rem";
   startButton.innerText = "Restart quiz";
   startButton.classList.remove("hide");
@@ -127,20 +151,21 @@ function showFinalScore() {
 
 // progress bar logic
 function createProgressBar() {
-  progressContainer.innerHTML = "";
-  for (let i = 0; i < questions.length; i++) {
+  // textContent is better than innerHTML for security reasons
+  progressContainer.textContent = "";
+  // use forEach loop to create progress segments to be consistent with the rest of the code
+  questions.forEach(() => {
     const segment = document.createElement("div");
     segment.classList.add("progress-segment", "progress-unanswered");
     progressContainer.appendChild(segment);
-  }
+  });
 }
 
 function updateProgressBar(correct) {
-  const segments = progressContainer.children;
-  segments[currentQuestionIndex].classList.remove("progress-unanswered");
-  segments[currentQuestionIndex].classList.add(
-    correct ? "progress-correct" : "progress-wrong"
-  );
+  // updated for readability
+  const segments = progressContainer.children[currentQuestionIndex];
+  segments.classList.remove("progress-unanswered");
+  segments.classList.add(correct ? "progress-correct" : "progress-wrong");
 }
 
 // helper functions
@@ -156,33 +181,29 @@ function resetState() {
 }
 
 function resetGame() {
-  questionContainer.classList.remove("hide");
-  progressContainer.classList.remove("hide");
-  scoreDisplay.classList.add("hide");
-  startButton.classList.add("hide");
-  checkButton.classList.remove("hide");
-  nextButton.classList.add("hide");
+  // refactor to use a forEach loop for readability
+  [questionContainer, progressContainer, checkButton].forEach((element) =>
+    element.classList.remove("hide")
+  );
+  [scoreDisplay, startButton, nextButton].forEach((element) =>
+    element.classList.add("hide")
+  );
 }
 
 function setStatusClass(element, correct) {
   clearStatusClass(element);
-  if (correct) {
-    element.classList.add("correct");
-  } else {
-    element.classList.add("wrong");
-  }
+  // use ternary operator for readability
+  correct ? element.classList.add("correct") : element.classList.add("wrong");
 }
 
 function clearStatusClass(element) {
-  element.classList.remove("correct");
-  element.classList.remove("wrong");
+  // this can be consolidated into one line
+  element.classList.remove("correct", "wrong");
 }
 
 function unescapeHTML(str) {
+  // refactor for readability
   const parser = new DOMParser();
-  const decoded = parser.parseFromString(
-    `<!doctype html> <body>${str}`,
-    "text/html"
-  ).body.textContent;
-  return decoded;
+  return parser.parseFromString(`<!doctype html><body>${str}`, "text/html").body
+    .textContent;
 }
